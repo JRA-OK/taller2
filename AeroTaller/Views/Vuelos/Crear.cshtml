@@ -1,0 +1,51 @@
+@model VueloCrearViewModel
+@{
+    ViewData["Title"] = "Nuevo vuelo";
+}
+
+<h1>Nuevo vuelo</h1>
+
+<form asp-action="Crear" method="post" class="formulario">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <label asp-for="Numero"></label>
+    <input asp-for="Numero" placeholder="AT1234" />
+    <span asp-validation-for="Numero"></span>
+
+    <label asp-for="OrigenId"></label>
+    <select asp-for="OrigenId" asp-items="Model.Aeropuertos">
+        <option value="">— Elegí el origen —</option>
+    </select>
+    <span asp-validation-for="OrigenId"></span>
+
+    <label asp-for="DestinoId"></label>
+    <select asp-for="DestinoId" asp-items="Model.Aeropuertos">
+        <option value="">— Elegí el destino —</option>
+    </select>
+    <span asp-validation-for="DestinoId"></span>
+
+    @* datetime-local envía "2026-12-20T09:00" (formato ISO, se interpreta igual en cualquier cultura) *@
+    <label asp-for="Salida"></label>
+    <input asp-for="Salida" type="datetime-local" />
+    <span asp-validation-for="Salida"></span>
+
+    <label asp-for="DuracionMinutos"></label>
+    <input asp-for="DuracionMinutos" />
+    <span asp-validation-for="DuracionMinutos"></span>
+
+    <label asp-for="Filas">Filas (6 asientos por fila)</label>
+    <input asp-for="Filas" />
+    <span asp-validation-for="Filas"></span>
+
+    <label asp-for="Precio"></label>
+    <input asp-for="Precio" step="0.01" />
+    <span asp-validation-for="Precio"></span>
+
+    <button type="submit">Crear vuelo</button>
+</form>
+
+<p><a asp-action="Index">← Volver a vuelos</a></p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,30 @@
+@model PasajeroCrearViewModel
+@{
+    ViewData["Title"] = "Nuevo pasajero";
+}
+
+<h1>Nuevo pasajero</h1>
+
+<form asp-action="Crear" method="post" class="formulario">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <label asp-for="Nombre"></label>
+    <input asp-for="Nombre" />
+    <span asp-validation-for="Nombre"></span>
+
+    <label asp-for="Dni"></label>
+    <input asp-for="Dni" inputmode="numeric" placeholder="30111222" />
+    <span asp-validation-for="Dni"></span>
+
+    <label asp-for="Email">Email (opcional)</label>
+    <input asp-for="Email" />
+    <span asp-validation-for="Email"></span>
+
+    <button type="submit">Registrar</button>
+</form>
+
+<p><a asp-action="Index">← Volver a pasajeros</a></p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

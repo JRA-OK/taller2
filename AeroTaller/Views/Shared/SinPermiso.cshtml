@@ -1,0 +1,12 @@
+@inject IAutenticacionService Autenticacion
+@{
+    ViewData["Title"] = "Sin permiso";
+}
+
+@* La devuelve RequiereRolAttribute (código 403): hay sesión, pero el rol no alcanza *@
+<h1>Sin permiso</h1>
+<p class="mensaje error">
+    @Autenticacion.Nombre, tu usuario (@Autenticacion.Rol) no tiene permiso para esta operación.
+</p>
+<p class="nota">Si la necesitás, pedile a un administrador que la realice.</p>
+<p><a asp-controller="Home" asp-action="Index">← Volver al inicio</a></p>

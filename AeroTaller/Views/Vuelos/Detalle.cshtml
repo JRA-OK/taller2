@@ -1,0 +1,55 @@
+@model VueloDetalleViewModel
+@{
+    var vuelo = Model.Vuelo;
+    ViewData["Title"] = $"Vuelo {vuelo.Numero}";
+}
+
+<h1>Vuelo @vuelo.Numero</h1>
+
+<dl class="ficha">
+    <dt>Origen</dt>
+    <dd>@vuelo.Origen.Ciudad (@vuelo.Origen.Codigo) · @vuelo.Origen.Nombre</dd>
+    <dt>Destino</dt>
+    <dd>@vuelo.Destino.Ciudad (@vuelo.Destino.Codigo) · @vuelo.Destino.Nombre</dd>
+    <dt>Salida</dt>
+    <dd>@vuelo.Salida.ToString("dddd dd/MM/yyyy HH:mm")</dd>
+    <dt>Llegada</dt>
+    <dd>@vuelo.Llegada.ToString("dddd dd/MM/yyyy HH:mm") (@vuelo.DuracionMinutos min)</dd>
+    <dt>Capacidad</dt>
+    <dd>@vuelo.Filas filas × 6 = @vuelo.Capacidad asientos · @Model.Libres libres</dd>
+    <dt>Precio</dt>
+    <dd>@vuelo.Precio.ToString("C")</dd>
+</dl>
+
+<h2>Mapa de asientos</h2>
+<p class="nota">Elegí un asiento libre (verde) para reservarlo. Los grises están ocupados.</p>
+
+@* Una fila del avión por renglón: A B C | pasillo | D E F. Código de asiento = número de fila + letra (12C) *@
+<div class="avion">
+    @for (int fila = 1; fila <= vuelo.Filas; fila++)
+    {
+        <div class="fila">
+            <span class="numero-fila">@fila</span>
+            @foreach (char letra in Vuelo.LetrasAsiento)
+            {
+                string codigo = $"{fila}{letra}";
+                if (letra == 'D')
+                {
+                    <span class="pasillo"></span>
+                }
+                if (Model.EstaOcupado(codigo))
+                {
+                    <span class="asiento ocupado" title="@codigo ocupado">@letra</span>
+                }
+                else
+                {
+                    <a class="asiento libre" title="Reservar @codigo"
+                       asp-controller="Reservas" asp-action="Crear"
+                       asp-route-vueloId="@vuelo.Id" asp-route-asiento="@codigo">@letra</a>
+                }
+            }
+        </div>
+    }
+</div>
+
+<p><a asp-action="Index">← Volver a vuelos</a></p>

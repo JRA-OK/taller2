@@ -1,0 +1,55 @@
+@model VuelosIndexViewModel
+@inject IAutenticacionService Autenticacion
+@{
+    ViewData["Title"] = "Vuelos";
+}
+
+<div class="acciones">
+    <h1>Vuelos</h1>
+    @if (Autenticacion.TieneRol(Roles.Admin))
+    {
+        <a class="boton secundario" asp-action="Crear">Nuevo vuelo</a>
+    }
+</div>
+
+@* GET: los filtros quedan en la URL (?DestinoId=…&Desde=…). Los name coinciden con los parámetros de la acción *@
+<form method="get" class="filtros">
+    <label asp-for="DestinoId">Destino</label>
+    <select asp-for="DestinoId" asp-items="Model.Destinos">
+        <option value="">Todos</option>
+    </select>
+
+    <label for="Desde">Desde</label>
+    <input type="date" name="Desde" id="Desde" value="@Model.Desde?.ToString("yyyy-MM-dd")" />
+
+    <button type="submit">Filtrar</button>
+    <a asp-action="Index">Limpiar</a>
+</form>
+
+@if (Model.Vuelos.Count == 0)
+{
+    <p class="nota">No hay vuelos con esos filtros.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Vuelo</th><th>Origen</th><th>Destino</th><th>Salida</th><th>Duración</th><th>Precio</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var vuelo in Model.Vuelos)
+            {
+                @* Los vuelos que ya salieron se muestran atenuados *@
+                <tr class="@(vuelo.Salida < DateTime.Now ? "pasado" : null)">
+                    <td>@vuelo.Numero</td>
+                    <td>@vuelo.Origen.Ciudad (@vuelo.Origen.Codigo)</td>
+                    <td>@vuelo.Destino.Ciudad (@vuelo.Destino.Codigo)</td>
+                    <td>@vuelo.Salida.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@vuelo.DuracionMinutos min</td>
+                    <td>@vuelo.Precio.ToString("C")</td>
+                    <td><a asp-action="Detalle" asp-route-id="@vuelo.Id">Detalle</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,11 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+@* Mensaje para el usuario: sin tipo de excepción, mensaje técnico ni traza (eso queda solo en logs/) *@
+<h1>Algo salió mal</h1>
+<p class="mensaje error">No pudimos completar la operación por un problema interno. Ya quedó registrado.</p>
+<p>Podés volver a intentarlo en unos minutos. Si el problema continúa, comunicá este código de referencia a soporte:</p>
+<p><code>@Model.CodigoReferencia</code></p>
+<p><a asp-controller="Home" asp-action="Index">← Volver al inicio</a></p>

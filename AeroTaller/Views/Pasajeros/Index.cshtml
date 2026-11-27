@@ -1,0 +1,39 @@
+@model List<Pasajero>
+@{
+    ViewData["Title"] = "Pasajeros";
+}
+
+<div class="acciones">
+    <h1>Pasajeros</h1>
+    <a class="boton secundario" asp-action="Crear">Nuevo pasajero</a>
+</div>
+
+@* method="get": la búsqueda viaja en la URL (?buscar=…), así se puede recargar o compartir *@
+<form method="get" class="buscador">
+    <input type="search" name="buscar" value="@ViewData["Buscar"]" placeholder="Nombre o DNI" />
+    <button type="submit">Buscar</button>
+</form>
+
+@if (Model.Count == 0)
+{
+    <p class="nota">No se encontraron pasajeros.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Nombre</th><th>DNI</th><th>Email</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var pasajero in Model)
+            {
+                <tr>
+                    <td>@pasajero.Nombre</td>
+                    <td>@pasajero.Dni</td>
+                    <td>@(pasajero.Email ?? "—")</td>
+                    <td><a asp-action="Detalle" asp-route-id="@pasajero.Id">Detalle</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

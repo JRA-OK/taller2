@@ -1,3 +1,5 @@
+@inject IConfiguration Configuracion
+@inject IAutenticacionService Autenticacion
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,17 +10,47 @@
     <link rel="stylesheet" href="~/css/sitio.css" asp-append-version="true" />
 </head>
 <body>
+    @if (Configuracion["OrigenDeDatos"] == "Falso")
+    {
+        <div class="aviso-falso">Modo de prueba: datos en memoria (OrigenDeDatos = Falso). Los cambios se pierden al reiniciar.</div>
+    }
     <header>
         <a class="marca" asp-controller="Home" asp-action="Index">AeroTaller</a>
         <nav>
-            @* Estos links van a funcionar cuando existan los controladores (desafío 3 en adelante) *@
             <a asp-controller="Vuelos" asp-action="Index">Vuelos</a>
-            <a asp-controller="Reservas" asp-action="Index">Reservas</a>
-            <a asp-controller="Pasajeros" asp-action="Index">Pasajeros</a>
+            @* Ocultar un link es comodidad, no seguridad: la protección real la ponen los filtros en el controlador *@
+            @if (Autenticacion.EstaAutenticado)
+            {
+                <a asp-controller="Reservas" asp-action="Index">Reservas</a>
+                <a asp-controller="Pasajeros" asp-action="Index">Pasajeros</a>
+            }
         </nav>
+        <div class="usuario">
+            @if (Autenticacion.EstaAutenticado)
+            {
+                <span>@Autenticacion.Nombre (@Autenticacion.Rol)</span>
+                <form asp-controller="Login" asp-action="Salir" method="post">
+                    <button type="submit" class="enlace">Salir</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Login" asp-action="Index">Iniciar sesión</a>
+            }
+        </div>
     </header>
 
     <main>
+        @* Mensaje de una sola lectura que deja un POST exitoso antes del Redirect (patrón PRG) *@
+        @if (TempData["Mensaje"] is string mensaje)
+        {
+            <p class="mensaje ok">@mensaje</p>
+        }
+        @if (TempData["Error"] is string error)
+        {
+            <p class="mensaje error">@error</p>
+        }
+
         @* Aquí se dibuja la vista que eligió el controlador *@
         @RenderBody()
     </main>

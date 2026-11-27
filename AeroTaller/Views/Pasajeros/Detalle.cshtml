@@ -1,0 +1,51 @@
+@model PasajeroDetalleViewModel
+@inject IAutenticacionService Autenticacion
+@{
+    ViewData["Title"] = Model.Pasajero.Nombre;
+}
+
+<h1>@Model.Pasajero.Nombre</h1>
+
+<dl class="ficha">
+    <dt>DNI</dt>
+    <dd>@Model.Pasajero.Dni</dd>
+    <dt>Email</dt>
+    <dd>@(Model.Pasajero.Email ?? "—")</dd>
+</dl>
+
+<h2>Reservas</h2>
+
+@if (Model.Reservas.Count == 0)
+{
+    <p class="nota">El pasajero no tiene reservas.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Vuelo</th><th>Ruta</th><th>Salida</th><th>Asiento</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var reserva in Model.Reservas)
+            {
+                <tr class="@(reserva.Vuelo.Salida < DateTime.Now ? "pasado" : null)">
+                    <td><a asp-controller="Vuelos" asp-action="Detalle" asp-route-id="@reserva.Vuelo.Id">@reserva.Vuelo.Numero</a></td>
+                    <td>@reserva.Vuelo.Origen.Codigo → @reserva.Vuelo.Destino.Codigo</td>
+                    <td>@reserva.Vuelo.Salida.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@reserva.Asiento</td>
+                    <td>@reserva.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Autenticacion.TieneRol(Roles.Admin))
+{
+    <form asp-action="Eliminar" asp-route-id="@Model.Pasajero.Id" method="post"
+          onsubmit="return confirm('¿Eliminar definitivamente a este pasajero?');">
+        <button type="submit" class="peligro">Eliminar pasajero</button>
+    </form>
+}
+
+<p><a asp-action="Index">← Volver a pasajeros</a></p>

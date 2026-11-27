@@ -1,0 +1,33 @@
+@model ReservaCrearViewModel
+@{
+    ViewData["Title"] = "Nueva reserva";
+}
+
+<h1>Nueva reserva</h1>
+
+@* El tag helper <form method="post"> agrega el campo oculto __RequestVerificationToken (antiforgery) *@
+<form asp-action="Crear" method="post" class="formulario">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <label asp-for="VueloId"></label>
+    <select asp-for="VueloId" asp-items="Model.Vuelos">
+        <option value="">— Elegí un vuelo —</option>
+    </select>
+    <span asp-validation-for="VueloId"></span>
+
+    <label asp-for="PasajeroId"></label>
+    <select asp-for="PasajeroId" asp-items="Model.Pasajeros">
+        <option value="">— Elegí un pasajero —</option>
+    </select>
+    <span asp-validation-for="PasajeroId"></span>
+
+    <label asp-for="Asiento"></label>
+    <input asp-for="Asiento" placeholder="12C" autocomplete="off" />
+    <span asp-validation-for="Asiento"></span>
+
+    <button type="submit">Reservar</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

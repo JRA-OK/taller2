@@ -1,0 +1,45 @@
+@model List<Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+}
+
+<div class="acciones">
+    <h1>Reservas</h1>
+    <a class="boton secundario" asp-action="Crear">Nueva reserva</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <p class="nota">Todavía no hay reservas.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Vuelo</th><th>Salida</th><th>Pasajero</th><th>Asiento</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var reserva in Model)
+            {
+                <tr class="@(reserva.Estado == EstadoReserva.Cancelada ? "pasado" : null)">
+                    <td><a asp-controller="Vuelos" asp-action="Detalle" asp-route-id="@reserva.Vuelo.Id">@reserva.Vuelo.Numero</a>
+                        · @reserva.Vuelo.Origen.Codigo → @reserva.Vuelo.Destino.Codigo</td>
+                    <td>@reserva.Vuelo.Salida.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td><a asp-controller="Pasajeros" asp-action="Detalle" asp-route-id="@reserva.Pasajero.Id">@reserva.Pasajero.Nombre</a></td>
+                    <td>@reserva.Asiento</td>
+                    <td>@reserva.Estado</td>
+                    <td>
+                        @if (reserva.Estado == EstadoReserva.Confirmada)
+                        {
+                            @* Un form por fila: el tag helper agrega el token antiforgery *@
+                            <form asp-action="Cancelar" asp-route-id="@reserva.Id" method="post"
+                                  onsubmit="return confirm('¿Cancelar la reserva del asiento @reserva.Asiento?');">
+                                <button type="submit" class="peligro">Cancelar</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
